@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Powered Mining Analytics | Mickey Xu</title>
+  <meta name="description" content="Komatsu capstone — NLP chatbot built on Snowflake and Streamlit delivering >80% query accuracy on mining equipment data." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #1c2330;
+      --border: #2d3748; --cyan: #22d3ee; --cyan-dim: #0891b2;
+      --cyan-glow: rgba(34,211,238,0.12); --green: #4ade80;
+      --text: #e2e8f0; --text-muted: #8892a4; --text-dim: #4a5568; --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px; opacity: 0.18; pointer-events: none; z-index: 0;
+    }
+    body > * { position: relative; z-index: 1; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 0; background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); }
+    .logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--cyan); }
+    .page { padding: 8rem 0 6rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--cyan); font-size: 0.85rem; font-weight: 500; margin-bottom: 2.5rem; transition: gap 0.2s; }
+    .back-link:hover { gap: 0.8rem; }
+    .proj-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.6rem; }
+    .proj-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+    .proj-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; line-height: 1.8; max-width: 680px; }
+    .tech-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .tech-chip { font-size: 0.72rem; padding: 0.25rem 0.7rem; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--cyan); font-weight: 600; letter-spacing: 0.06em; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--cyan), var(--green)); }
+    .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--cyan); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .proj-section { margin-bottom: 2.5rem; }
+    .proj-section-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+    .proj-section-title::before { content: ''; display: inline-block; width: 3px; height: 1.1em; background: var(--cyan); border-radius: 2px; }
+    .proj-section p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.85; margin-bottom: 0.9rem; }
+    .proj-section p strong { color: var(--text); }
+    .proj-list { padding-left: 0; margin-top: 0.6rem; }
+    .proj-list li { color: var(--text-muted); font-size: 0.95rem; padding: 0.5rem 0 0.5rem 1.4rem; position: relative; line-height: 1.75; border-bottom: 1px solid var(--surface2); }
+    .proj-list li:last-child { border-bottom: none; }
+    .proj-list li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); font-size: 0.7rem; top: 0.62rem; }
+    .proj-list li strong { color: var(--text); }
+    /* Data category cards */
+    .data-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .data-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+    .data-card-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .data-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    /* Tech highlight cards */
+    .tech-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .tech-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.4rem; }
+    .tech-card-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .tech-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-credit { font-size: 0.8rem; color: var(--text-dim); }
+    .footer-credit span { color: var(--cyan); }
+    @media (max-width: 640px) { .tech-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">SX<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+
+      <a href="index.html#projects" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Projects
+      </a>
+
+      <p class="proj-eyebrow">UW–Madison × Komatsu Capstone</p>
+      <h1 class="proj-title">AI-Powered Mining Analytics</h1>
+      <p class="proj-subtitle">A natural language AI assistant built with Streamlit and Snowflake Cortex LLMs, enabling business users to instantly query complex mining equipment datasets without writing a single line of SQL — achieving &gt;80% query accuracy.</p>
+
+      <div class="tech-row">
+        <span class="tech-chip">Snowflake Cortex</span>
+        <span class="tech-chip">Streamlit</span>
+        <span class="tech-chip">NLP</span>
+        <span class="tech-chip">LLM</span>
+        <span class="tech-chip">Semantic Data Model</span>
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">SQL</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">&gt;80%</div>
+          <div class="stat-label">Query Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Data Categories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">NLP</div>
+          <div class="stat-label">Interface Type</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">0</div>
+          <div class="stat-label">SQL Required by User</div>
+        </div>
+      </div>
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Business Problem</h2>
+        <p>Komatsu's mining equipment generates enormous volumes of operational data — but extracting insights from it required technical SQL expertise, creating a bottleneck between the data and the business users who needed it most.</p>
+        <p>The core challenge: <strong>How can we provide instant, reliable data insights through an AI-powered interface</strong> that any analyst or operations manager can use, without writing queries?</p>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Data Overview</h2>
+        <p>We worked with extensive industrial datasets generated by Komatsu mining machines across three categories:</p>
+        <div class="data-cards">
+          <div class="data-card">
+            <div class="data-card-title">Equipment Health</div>
+            <div class="data-card-desc">Error episodes, event codes, and shift-level damage and abuse metrics tracking machine condition over time.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-title">Operations Productivity</div>
+            <div class="data-card-desc">Shift reports covering dig hours, idle hours, payload amounts, and 10-minute utilization averages.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-title">Dig Cycle Performance</div>
+            <div class="data-card-desc">Detailed timing, payload measurements, and machine positional metrics captured during active operation.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Our Solution</h2>
+        <p>The final deliverable is an intelligent chatbot that answers advanced data questions — such as <em>"What is the average productivity across the 4800 lineup?"</em> — with at least 80% accuracy. We used a <strong>Semantic Data Model powered by NLP</strong> to bridge the gap between plain English and raw SQL queries, eliminating the need for technical expertise at the point of query.</p>
+        <p>This design choice also prevents LLM hallucination — by anchoring responses to a defined semantic layer rather than open-ended generation, the answers remain factually grounded in the actual data warehouse.</p>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Technologies Used</h2>
+        <div class="tech-cards">
+          <div class="tech-card">
+            <div class="tech-card-name">Snowflake Cortex</div>
+            <div class="tech-card-desc">Central data warehouse hosting secure LLMs and defining the semantic models that ensure reliable, hallucination-free query generation.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Streamlit</div>
+            <div class="tech-card-desc">Rapid front-end development of the AI assistant interface, with seamless Snowflake integration and a clean, dynamic UI for end users.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-credit">Designed &amp; Built by <span>Mickey (Shoujun) Xu</span></div>
+  </footer>
+
+</body>
+</html>

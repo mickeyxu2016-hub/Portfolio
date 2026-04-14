@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud Data Pipeline & Risk Prediction | Mickey Xu</title>
+  <meta name="description" content="End-to-end AWS cloud data pipeline and bankruptcy prediction ML model — 92.52% accuracy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #1c2330;
+      --border: #2d3748; --cyan: #22d3ee; --cyan-dim: #0891b2;
+      --cyan-glow: rgba(34,211,238,0.12); --green: #4ade80;
+      --text: #e2e8f0; --text-muted: #8892a4; --text-dim: #4a5568; --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px; opacity: 0.18; pointer-events: none; z-index: 0;
+    }
+    body > * { position: relative; z-index: 1; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 0; background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); }
+    .logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--cyan); }
+    .page { padding: 8rem 0 6rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--cyan); font-size: 0.85rem; font-weight: 500; margin-bottom: 2.5rem; transition: gap 0.2s; }
+    .back-link:hover { gap: 0.8rem; }
+    .proj-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.6rem; }
+    .proj-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+    .proj-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; line-height: 1.8; max-width: 680px; }
+    .tech-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .tech-chip { font-size: 0.72rem; padding: 0.25rem 0.7rem; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--cyan); font-weight: 600; letter-spacing: 0.06em; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--cyan), var(--green)); }
+    .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--cyan); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .video-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 3rem; }
+    .video-wrap iframe { display: block; width: 100%; height: 430px; }
+    .proj-section { margin-bottom: 2.5rem; }
+    .proj-section-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+    .proj-section-title::before { content: ''; display: inline-block; width: 3px; height: 1.1em; background: var(--cyan); border-radius: 2px; }
+    .proj-section p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.85; margin-bottom: 0.9rem; }
+    .proj-section p strong { color: var(--text); }
+    .proj-list { padding-left: 0; margin-top: 0.6rem; }
+    .proj-list li { color: var(--text-muted); font-size: 0.95rem; padding: 0.5rem 0 0.5rem 1.4rem; position: relative; line-height: 1.75; border-bottom: 1px solid var(--surface2); }
+    .proj-list li:last-child { border-bottom: none; }
+    .proj-list li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); font-size: 0.7rem; top: 0.62rem; }
+    .proj-list li strong { color: var(--text); }
+    code { font-family: monospace; font-size: 0.82em; background: var(--surface2); padding: 0.15em 0.45em; border-radius: 4px; border: 1px solid var(--border); color: var(--cyan); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-credit { font-size: 0.8rem; color: var(--text-dim); }
+    .footer-credit span { color: var(--cyan); }
+    @media (max-width: 640px) { .video-wrap iframe { height: 220px; } .stats-row { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">SX<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+
+      <a href="index.html#projects" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Projects
+      </a>
+
+      <p class="proj-eyebrow">Cloud Engineering &amp; Machine Learning</p>
+      <h1 class="proj-title">Cloud Data Pipeline &amp; Risk Prediction</h1>
+      <p class="proj-subtitle">An end-to-end AWS data architecture that ingests raw financial data, resolves schema inconsistencies via ELT in Redshift, and trains a SageMaker ML model to predict corporate bankruptcy with 92.52% accuracy.</p>
+
+      <div class="tech-row">
+        <span class="tech-chip">AWS S3</span>
+        <span class="tech-chip">AWS Glue</span>
+        <span class="tech-chip">Amazon Redshift</span>
+        <span class="tech-chip">SageMaker Canvas</span>
+        <span class="tech-chip">ELT Pipeline</span>
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">SQL</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">92.52%</div>
+          <div class="stat-label">Model Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">85–97%</div>
+          <div class="stat-label">Prediction Confidence</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">4</div>
+          <div class="stat-label">Source Data Files</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">10</div>
+          <div class="stat-label">Companies Scored</div>
+        </div>
+      </div>
+
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/1u9hq6f0q9c" title="Cloud Data Pipeline Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Project Overview</h2>
+        <p>This project designed an end-to-end AWS cloud data architecture to analyze corporate bankruptcy risk using financial ratios. The pipeline handles data from its raw landing in S3, through ELT operations in Glue and Redshift, all the way to predictive modeling in SageMaker — reflecting a real-world analytics engineering workflow where clean, reliable data is the foundation of every good model.</p>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Data Pipeline Challenge</h2>
+        <p>The project sourced data from four files containing financial stats, ratios, bankruptcy flags, and ten unlabeled company profiles. Mixed file formats (CSVs and pipe-delimited text) reflected the messy reality of production data engineering — nothing comes in clean.</p>
+        <ul class="proj-list">
+          <li><strong>Initial Architecture:</strong> Raw data was landed into an <code>Input-data</code> bucket on Amazon S3. AWS Glue was configured to perform inner joins across the ratio data files.</li>
+          <li><strong>The Crawler Problem:</strong> The Glue crawler inferred inconsistent data types and encountered untrimmed join keys, causing nearly half of all rows to fail the join — a serious data integrity issue.</li>
+          <li><strong>Pivoting to ELT in Redshift:</strong> I shifted to an ELT strategy, copying all source files directly into Redshift and using a custom SQL query (<code>CREATE TABLE combined_data</code>) to enforce schema strictness, trim join keys, and fully restore expected row counts.</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Predictive Modeling with SageMaker</h2>
+        <p>The cleaned master dataset was loaded from Redshift into SageMaker Canvas for model training. The 10 unlabeled company profiles were kept in a separate <code>Predict-data</code> S3 folder to maintain data governance and auditability throughout the process.</p>
+        <ul class="proj-list">
+          <li><strong>Model Training:</strong> Using an 80/20 train/test split, SageMaker Canvas produced a model with <strong>92.522% accuracy</strong> on bankruptcy prediction — a robust result for financial risk classification.</li>
+          <li><strong>Exploratory Insights:</strong> Correlation analysis showed that liquidity and profitability metrics are the strongest indicators of company health, while high variance in liability metrics powerfully predicts bankruptcy risk — findings directly useful for credit analysts.</li>
+          <li><strong>Batch Inference:</strong> Predictions on the 10 target companies produced confidence scores between 85% and 97%, giving stakeholders reliable, high-confidence risk classifications they can act on.</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-credit">Designed &amp; Built by <span>Mickey (Shoujun) Xu</span></div>
+  </footer>
+
+</body>
+</html>
