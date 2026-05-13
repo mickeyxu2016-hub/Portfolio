@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Powered Mining Analytics | Mickey Xu</title>
+  <meta name="description" content="Komatsu capstone — natural-language analytics chatbot built on Snowflake Cortex Analyst and Streamlit, with a custom semantic model delivering 100% query accuracy across 7 verified question patterns." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #1c2330;
+      --border: #2d3748; --cyan: #22d3ee; --cyan-dim: #0891b2;
+      --cyan-glow: rgba(34,211,238,0.12); --green: #4ade80;
+      --text: #e2e8f0; --text-muted: #8892a4; --text-dim: #4a5568; --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px; opacity: 0.18; pointer-events: none; z-index: 0;
+    }
+    body > * { position: relative; z-index: 1; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 0; background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); }
+    .logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--cyan); }
+    .page { padding: 8rem 0 6rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--cyan); font-size: 0.85rem; font-weight: 500; margin-bottom: 2.5rem; transition: gap 0.2s; }
+    .back-link:hover { gap: 0.8rem; }
+    .proj-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.6rem; }
+    .proj-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+    .proj-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; line-height: 1.8; max-width: 680px; }
+    .tech-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .tech-chip { font-size: 0.72rem; padding: 0.25rem 0.7rem; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--cyan); font-weight: 600; letter-spacing: 0.06em; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--cyan), var(--green)); }
+    .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--cyan); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .proj-section { margin-bottom: 2.5rem; }
+    .proj-section-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+    .proj-section-title::before { content: ''; display: inline-block; width: 3px; height: 1.1em; background: var(--cyan); border-radius: 2px; }
+    .proj-section p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.85; margin-bottom: 0.9rem; }
+    .proj-section p strong { color: var(--text); }
+    .proj-section p em { color: var(--cyan); font-style: normal; }
+    .proj-list { padding-left: 0; margin-top: 0.6rem; }
+    .proj-list li { color: var(--text-muted); font-size: 0.95rem; padding: 0.5rem 0 0.5rem 1.4rem; position: relative; line-height: 1.75; border-bottom: 1px solid var(--surface2); }
+    .proj-list li:last-child { border-bottom: none; }
+    .proj-list li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); font-size: 0.7rem; top: 0.62rem; }
+    .proj-list li strong { color: var(--text); }
+    /* Data category cards */
+    .data-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .data-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+    .data-card-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .data-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    /* Tech highlight cards */
+    .tech-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .tech-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.4rem; }
+    .tech-card-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .tech-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    /* Workflow steps */
+    .flow-steps { margin-top: 1rem; }
+    .flow-step { display: grid; grid-template-columns: 2.2rem 1fr; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--surface2); }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--cyan); }
+    .flow-body h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .flow-body p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+    /* Pull-quote / callout */
+    .callout { border-left: 3px solid var(--cyan); background: var(--surface); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1.2rem 0; }
+    .callout p { font-size: 0.92rem; color: var(--text); margin: 0; line-height: 1.75; }
+    .callout p em { color: var(--cyan); font-style: italic; }
+    /* Code-style query example */
+    .query-example { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1.1rem; font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; color: var(--text); margin: 0.8rem 0; }
+    .query-example::before { content: '> '; color: var(--cyan); font-weight: 700; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-credit { font-size: 0.8rem; color: var(--text-dim); }
+    .footer-credit span { color: var(--cyan); }
+    @media (max-width: 640px) { .tech-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">SX<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+
+      <a href="index.html#projects" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Projects
+      </a>
+
+      <p class="proj-eyebrow">UW–Madison × Komatsu Capstone</p>
+      <h1 class="proj-title">AI-Powered Mining Analytics</h1>
+      <p class="proj-subtitle">An end-to-end natural-language analytics chatbot that lets non-technical operators at Komatsu query mining-equipment data in plain English — compressing a multi-day analyst loop into seconds, with full SQL transparency under every answer and a semantic model robust enough to catch unrealistic inputs before they become wrong answers.</p>
+
+      <div class="tech-row">
+        <span class="tech-chip">Snowflake Cortex Analyst</span>
+        <span class="tech-chip">Streamlit</span>
+        <span class="tech-chip">Semantic Model</span>
+        <span class="tech-chip">YAML</span>
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">SQL</span>
+        <span class="tech-chip">Custom CSS / HTML</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">Query Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">7</div>
+          <div class="stat-label">Verified Question Patterns</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Days → Sec</div>
+          <div class="stat-label">Time to Insight</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Built-in</div>
+          <div class="stat-label">Value Sanity Checks</div>
+        </div>
+      </div>
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Business Problem</h2>
+        <p>At Komatsu, operations leads in the field can't answer their own data questions. When an operator wants to know how a machine is performing, the request travels through a three-step chain: <strong>operator → engineer → business analyst</strong>. The BA writes the SQL, runs it, formats a report, and sends it back.</p>
+        <p>That loop takes <strong>hours, sometimes days</strong> — by the time the answer arrives, the operational decision has already been made without it.</p>
+        <div class="callout">
+          <p>The core question: <em>Can we replace that three-step chain with a single chat box?</em></p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Data Overview</h2>
+        <p>We worked with industrial datasets generated by Komatsu electric shovels across three categories:</p>
+        <div class="data-cards">
+          <div class="data-card">
+            <div class="data-card-title">Equipment Health</div>
+            <div class="data-card-desc">Error episodes, event codes, and shift-level damage and abuse metrics tracking machine condition over time.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-title">Operations Productivity</div>
+            <div class="data-card-desc">Shift reports covering dig hours, idle hours, payload amounts, and 10-minute utilization averages.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-title">Dig Cycle Performance</div>
+            <div class="data-card-desc">Detailed timing, payload measurements, and machine positional metrics captured during active operation.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">How It Works</h2>
+        <p>The system pairs a custom <strong>Snowflake semantic model</strong> with <strong>Snowflake Cortex Analyst</strong> (LLM-backed text-to-SQL), wrapped in a Komatsu-branded <strong>Streamlit</strong> front-end deployed inside Snowflake.</p>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-num">01</div>
+            <div class="flow-body">
+              <h4>Semantic Modeling</h4>
+              <p>Translated business questions into a YAML semantic model — defined entities (machines, lineups, sites), relationships, verified queries, and a synonym layer so the model understands that <em>"productivity," "tonnes per hour," and "throughput"</em> all mean the same thing.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">02</div>
+            <div class="flow-body">
+              <h4>Verified Training Questions</h4>
+              <p>Designed and validated seven training questions with Komatsu stakeholders, covering aggregations, exclusions, comparisons, and time-window analysis. Final accuracy benchmarked at <strong>100%</strong>.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">03</div>
+            <div class="flow-body">
+              <h4>Streamlit Front-End</h4>
+              <p>Built a chat interface with a one-click <strong>"Description of the data"</strong> button, a collapsible <strong>sample-question drawer</strong>, and a <strong>transparent SQL reveal</strong> below every answer. All styled with custom CSS to match Komatsu's brand.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">04</div>
+            <div class="flow-body">
+              <h4>Cortex Integration</h4>
+              <p>Wired the front-end to Cortex Analyst via <code style="color:var(--cyan);font-family:'Space Grotesk',sans-serif;font-size:0.85rem;">_snowflake.send_snow_api_request()</code>, handling session state, retries, and rendering of returned SQL + tabular results.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">05</div>
+            <div class="flow-body">
+              <h4>Stakeholder Validation</h4>
+              <p>Demoed the working app to Komatsu's BI lead and capstone faculty; iterated on UI, sample questions, and result formatting based on their feedback.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">What Makes It Different</h2>
+        <p>Most "AI chatbot" projects stop at <em>"it generates SQL."</em> Four design decisions made this one usable in production:</p>
+        <ul class="proj-list">
+          <li><strong>Pattern over phrasing.</strong> The semantic model encodes the <em>concept</em> of a product family, a metric, a time window. A user can ask <em>"average productivity across one electric shovel family, excluding a specific unit"</em> today, and tomorrow swap that unit for any other in the fleet, compare one product family against another, or exclude two units at once — and the chatbot still generates correct SQL. It understands the question pattern, not just the question.</li>
+          <li><strong>Sanity checks on values, not just on syntax.</strong> Because the semantic model encodes the realistic range of each metric and the meaning of each unit, the chatbot refuses to silently return garbage. If a user types <em>"how is the machine performing at 8,000,000°C,"</em> the system recognizes the value is impossible, flags it, and asks the user to confirm — suggesting plausible corrections like <em>80°C</em> or <em>8°C</em>. The model interprets the question instead of blindly executing it.</li>
+          <li><strong>Discoverability built in.</strong> Because the semantic model also defines descriptions and synonyms, the same layer that powers SQL generation also answers <em>"what's in this data?"</em> — giving new users a zero-friction onboarding path with one click.</li>
+          <li><strong>Trust through transparency.</strong> Every answer surfaces the generated SQL underneath. Non-technical users get the number; technical users get an auditable trail. This was the design choice the Komatsu BI lead flagged as the most important.</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">A Real Question, End to End</h2>
+        <p>One of the demo questions, asked in plain English:</p>
+        <div class="query-example">What is the average productivity across our electric shovel family, excluding the unit that's down for maintenance?</div>
+        <p>Three things have to happen for the system to answer this correctly:</p>
+        <ul class="proj-list">
+          <li><strong>Product hierarchy</strong> — know which machines belong to a given product family</li>
+          <li><strong>Aggregation</strong> — compute an average over the productivity metric</li>
+          <li><strong>Negation</strong> — translate the English word <em>"excluding"</em> into a SQL filter</li>
+        </ul>
+        <p>The semantic model handles all three from one sentence. The chatbot returns the answer and the generated SQL side-by-side, so the user sees both <em>what</em> the number is and <em>how</em> it was computed.</p>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Impact</h2>
+        <ul class="proj-list">
+          <li>Compressed a <strong>multi-day analyst loop into seconds</strong> for the seven validated question patterns</li>
+          <li>Freed business analysts from repetitive lookups to focus on <strong>higher-value analysis</strong></li>
+          <li>Built a <strong>scalable architecture</strong> — new sensors or metrics can be added to the semantic model without rewriting the chatbot</li>
+          <li>Established a <strong>template Komatsu can extend</strong> across product families, additional sensor data, and external mining customers</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Technologies Used</h2>
+        <div class="tech-cards">
+          <div class="tech-card">
+            <div class="tech-card-name">Snowflake Cortex Analyst</div>
+            <div class="tech-card-desc">Text-to-SQL engine grounded on the custom semantic model. Returns SQL and tabular results to the front-end via a single API call.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Snowflake Semantic View</div>
+            <div class="tech-card-desc">The business-meaning layer over raw sensor data — defines entities, relationships, verified queries, and a synonym layer that prevents LLM hallucination.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Streamlit on Snowflake</div>
+            <div class="tech-card-desc">Python-based front-end deployed natively inside Snowflake. Custom CSS and HTML layered over default widgets for a Komatsu-branded experience.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Python &amp; SQL</div>
+            <div class="tech-card-desc">App logic, session state, error handling, and SQL diagnostics for validating Cortex output against ground-truth queries.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-credit">Designed &amp; Built by <span>Mickey (Shoujun) Xu</span></div>
+  </footer>
+
+</body>
+</html>

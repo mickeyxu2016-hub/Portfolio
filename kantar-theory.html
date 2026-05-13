@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theory Brand Repositioning · Kantar China | Mickey Xu</title>
+  <meta name="description" content="Kantar China internship — consumer behavior and brand perception analysis informing Theory's repositioning from business-focused apparel to lifestyle luxury in the Chinese premium market, built on a custom three-dimensional prioritization framework." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #1c2330;
+      --border: #2d3748; --cyan: #22d3ee; --cyan-dim: #0891b2;
+      --cyan-glow: rgba(34,211,238,0.12); --green: #4ade80;
+      --text: #e2e8f0; --text-muted: #8892a4; --text-dim: #4a5568; --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px; opacity: 0.18; pointer-events: none; z-index: 0;
+    }
+    body > * { position: relative; z-index: 1; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 0; background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); }
+    .logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--cyan); }
+    .page { padding: 8rem 0 6rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--cyan); font-size: 0.85rem; font-weight: 500; margin-bottom: 2.5rem; transition: gap 0.2s; }
+    .back-link:hover { gap: 0.8rem; }
+    .proj-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.6rem; }
+    .proj-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+    .proj-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; line-height: 1.8; max-width: 680px; }
+    .tech-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .tech-chip { font-size: 0.72rem; padding: 0.25rem 0.7rem; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--cyan); font-weight: 600; letter-spacing: 0.06em; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--cyan), var(--green)); }
+    .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--cyan); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .proj-section { margin-bottom: 2.5rem; }
+    .proj-section-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+    .proj-section-title::before { content: ''; display: inline-block; width: 3px; height: 1.1em; background: var(--cyan); border-radius: 2px; }
+    .proj-section p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.85; margin-bottom: 0.9rem; }
+    .proj-section p strong { color: var(--text); }
+    .proj-section p em { color: var(--cyan); font-style: normal; }
+    .proj-list { padding-left: 0; margin-top: 0.6rem; }
+    .proj-list li { color: var(--text-muted); font-size: 0.95rem; padding: 0.5rem 0 0.5rem 1.4rem; position: relative; line-height: 1.75; border-bottom: 1px solid var(--surface2); }
+    .proj-list li:last-child { border-bottom: none; }
+    .proj-list li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); font-size: 0.7rem; top: 0.62rem; }
+    .proj-list li strong { color: var(--text); }
+    .data-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .data-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+    .data-card-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .data-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    .tech-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .tech-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.4rem; }
+    .tech-card-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .tech-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    .flow-steps { margin-top: 1rem; }
+    .flow-step { display: grid; grid-template-columns: 2.2rem 1fr; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--surface2); }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--cyan); }
+    .flow-body h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .flow-body p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+    .callout { border-left: 3px solid var(--cyan); background: var(--surface); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1.2rem 0; }
+    .callout p { font-size: 0.92rem; color: var(--text); margin: 0; line-height: 1.75; }
+    .callout p em { color: var(--cyan); font-style: italic; }
+    .query-example { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1.1rem; font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; color: var(--text); margin: 0.8rem 0; }
+    .query-example::before { content: '> '; color: var(--cyan); font-weight: 700; }
+    /* Framework dimensions grid */
+    .framework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .framework-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.3rem; position: relative; overflow: hidden; }
+    .framework-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px; background: var(--cyan); }
+    .framework-symbol { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--cyan); margin-bottom: 0.4rem; }
+    .framework-name { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .framework-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-credit { font-size: 0.8rem; color: var(--text-dim); }
+    .footer-credit span { color: var(--cyan); }
+    @media (max-width: 640px) { .tech-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">SX<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+
+      <a href="index.html#experience" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Experience
+      </a>
+
+      <p class="proj-eyebrow">Kantar China · Data Analyst Internship</p>
+      <h1 class="proj-title">Repositioning Theory: From Business Wear to Lifestyle Luxury</h1>
+      <p class="proj-subtitle">A consumer-insights project for Theory's entry into a more lifestyle-driven, premium positioning in the Chinese apparel market — combining multi-source consumer data, a custom three-dimensional prioritization framework, and consulting-style visualization to translate scattered consumer signals into a focused brand-strategy roadmap.</p>
+
+      <div class="tech-row">
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">R</span>
+        <span class="tech-chip">Pandas / NumPy</span>
+        <span class="tech-chip">ggplot2 / Matplotlib</span>
+        <span class="tech-chip">Tableau</span>
+        <span class="tech-chip">Excel</span>
+        <span class="tech-chip">Canva</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">3-D</div>
+          <div class="stat-label">Prioritization Framework</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">3+</div>
+          <div class="stat-label">Data Sources Integrated</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Client</div>
+          <div class="stat-label">Decks Delivered</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Strategy</div>
+          <div class="stat-label">Recommendations</div>
+        </div>
+      </div>
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Business Problem</h2>
+        <p>Theory built its name on tailored, business-focused apparel — sharp suiting, the clean office uniform. But the Chinese premium-apparel consumer was moving fast: younger shoppers were spending more on <strong>self-expression and lifestyle</strong>, not just professional wear, and the brand's existing positioning was leaving growth on the table.</p>
+        <p>The client wanted to evolve from <strong>"business wear"</strong> to <strong>"lifestyle luxury"</strong> — but a brand repositioning is only as good as the consumer evidence behind it. The question was: what does the Chinese premium consumer actually want, where is Theory underperforming today, and which strategic moves matter most?</p>
+        <div class="callout">
+          <p>The core question: <em>Out of dozens of consumer signals, which few should Theory actually act on first?</em></p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Data Overview</h2>
+        <p>I integrated consumer data from three categories to triangulate a single view of the premium-apparel consumer in China:</p>
+        <div class="data-cards">
+          <div class="data-card">
+            <div class="data-card-title">Internal Kantar Datasets</div>
+            <div class="data-card-desc">Proprietary survey responses on consumer attitudes, purchase drivers, brand perception, and product attribute importance vs. satisfaction.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-title">CBNData</div>
+            <div class="data-card-desc">Chinese consumer-trend reports covering category-level spending shifts, generational behavior, and channel preference data.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-title">199IT</div>
+            <div class="data-card-desc">Industry research aggregating market sizing, competitor performance, and macro retail trends across the Chinese fashion industry.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Prioritization Framework</h2>
+        <p>The hardest part of any consumer-insights project is the same: <em>dozens of attributes, each with a survey score — which ones actually deserve client action?</em></p>
+        <p>I built an Excel-based prioritization framework that scored every strategic attribute on three dimensions, instead of the usual one or two. This is what made the recommendations defensible and focused rather than a long flat list:</p>
+        <div class="framework-grid">
+          <div class="framework-card">
+            <div class="framework-symbol">µ</div>
+            <div class="framework-name">Mean Importance</div>
+            <div class="framework-desc">How important is this attribute to consumers, on average? The baseline filter — separates "table stakes" from "doesn't matter."</div>
+          </div>
+          <div class="framework-card">
+            <div class="framework-symbol">σ</div>
+            <div class="framework-name">Standard Deviation</div>
+            <div class="framework-desc">How much do consumers <em>agree</em> on the importance? Low SD = consensus the brand can confidently lean into. High SD = a segmented opportunity, not a universal one.</div>
+          </div>
+          <div class="framework-card">
+            <div class="framework-symbol">Δ</div>
+            <div class="framework-name">Unmet Importance</div>
+            <div class="framework-desc">The gap between importance and satisfaction. The bigger the gap, the bigger the white-space opportunity for Theory to win on something its competitors haven't.</div>
+          </div>
+        </div>
+        <p style="margin-top: 1.2rem;">Combining the three dimensions sorted every attribute into one of four strategic buckets — <strong>priority innovation</strong>, <strong>innovation opportunity</strong>, <strong>maintain</strong>, or <strong>deprioritize</strong> — turning a 30-attribute table into a short, defensible action list the client could actually use.</p>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">How I Worked the Project</h2>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-num">01</div>
+            <div class="flow-body">
+              <h4>Market &amp; Desktop Research</h4>
+              <p>Mapped the Chinese premium-apparel landscape — category growth, generational shifts, channel preferences, and competitor case studies (Acne Studios, Sandro, Maje, ICICLE) — to anchor Theory's repositioning in the broader market context.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">02</div>
+            <div class="flow-body">
+              <h4>Data Integration &amp; Cleaning</h4>
+              <p>Pulled consumer data from <strong>internal Kantar surveys, CBNData, and 199IT</strong>; cleaned and reshaped the data using <strong>Python (Pandas, NumPy)</strong> and <strong>R</strong> so attributes, segments, and time windows lined up across sources.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">03</div>
+            <div class="flow-body">
+              <h4>Prioritization Modeling</h4>
+              <p>Built the three-dimensional <strong>mean × SD × unmet-importance</strong> framework in Excel; tagged each attribute with a strategic bucket so the client could see at a glance where to focus next.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">04</div>
+            <div class="flow-body">
+              <h4>Visualization</h4>
+              <p>Translated the analysis into client-ready visuals using <strong>Matplotlib, ggplot2, and Tableau</strong> — consumer journey maps, competitive positioning charts, attribute prioritization quadrants, and segment profiles.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">05</div>
+            <div class="flow-body">
+              <h4>Consulting Deck Delivery</h4>
+              <p>Assembled the final narrative in <strong>Canva</strong> — translating dense analytical findings into a clear, executive-grade visual story used in client-facing consulting presentations.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">What Made the Analysis Different</h2>
+        <ul class="proj-list">
+          <li><strong>Three dimensions, not two.</strong> Classic importance × satisfaction analysis ranks attributes on two axes. Adding <em>standard deviation</em> as a third lens revealed which "high importance" findings were universal vs. driven by a vocal segment — and prevented the client from over-investing in polarizing attributes.</li>
+          <li><strong>Multi-source triangulation.</strong> No single data source tells the truth alone. Cross-referencing Kantar's first-party consumer panel with CBNData's category-level trends and 199IT's market sizing meant every recommendation was anchored in at least two independent signals.</li>
+          <li><strong>From analysis to action.</strong> The four-bucket output (<em>priority innovate / innovate / maintain / deprioritize</em>) mapped directly to client decision-making — what to build next, what to defend, what to stop spending against. Analysts deliver tables; this delivered a roadmap.</li>
+          <li><strong>Built for storytelling.</strong> Every chart went through a visual-narrative pass — same numbers, but the question they answered was always visible at the top. The Canva-finished decks were the artifact the client actually used, not the raw notebooks.</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Impact</h2>
+        <ul class="proj-list">
+          <li>Delivered <strong>data-backed recommendations</strong> shaping Theory's brand repositioning from business-focused to lifestyle/luxury in the Chinese premium-apparel market</li>
+          <li>Reframed a 30-attribute survey output into a <strong>focused action list</strong> the client could prioritize against, instead of a flat table of scores</li>
+          <li>Contributed insights on <strong>brand image refinement, CRM optimization, and competitive positioning</strong> that fed directly into consulting deliverables and executive presentations</li>
+          <li>Built a <strong>reusable prioritization framework</strong> the team could apply to other premium-apparel brand projects beyond the Theory engagement</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">What I Learned</h2>
+        <ul class="proj-list">
+          <li><strong>The framework is the deliverable.</strong> Clients don't pay for a table of survey numbers — they pay for a defensible way to choose what matters. The three-dimensional scoring was the real product; the charts were just how it got communicated.</li>
+          <li><strong>Variance is signal, not noise.</strong> Looking at SD alongside the mean changed which recommendations I was willing to put in front of the client. It's a habit that carried into every analytical project after this one.</li>
+          <li><strong>Storytelling is technical.</strong> The same number told in two different ways drives two different decisions. Spending real time on Tableau and Canva visual choices wasn't decoration — it was the difference between a slide that lands and a slide that gets skipped.</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Technologies Used</h2>
+        <div class="tech-cards">
+          <div class="tech-card">
+            <div class="tech-card-name">Python (Pandas, NumPy)</div>
+            <div class="tech-card-desc">Data cleaning, reshaping, and integration across multi-source consumer datasets. Computed importance, satisfaction, and unmet-importance scores for the prioritization framework.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">R (ggplot2)</div>
+            <div class="tech-card-desc">Statistical exploration and publication-quality visualizations — consumer journey charts, segment profiles, and prioritization quadrants used inside client decks.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Tableau</div>
+            <div class="tech-card-desc">Interactive dashboards for internal review and slide-ready visualizations of competitive positioning and attribute prioritization shipped into the consulting presentation.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Excel</div>
+            <div class="tech-card-desc">Home of the three-dimensional prioritization framework — mean, SD, and unmet-importance scoring driving the strategic-bucket classification for every attribute.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Matplotlib / Seaborn</div>
+            <div class="tech-card-desc">Quick exploratory charts during the analysis phase, plus final figures embedded into Python-generated reports.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Canva</div>
+            <div class="tech-card-desc">Assembled the final consulting decks — translating dense analytical findings into clear, executive-grade visual storytelling for client-facing presentations.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-credit">Designed &amp; Built by <span>Mickey (Shoujun) Xu</span></div>
+  </footer>
+
+</body>
+</html>
