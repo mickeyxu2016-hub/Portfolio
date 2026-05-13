@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Competitive Brand &amp; Social Listening Analysis | Mickey Xu</title>
+  <meta name="description" content="A 7-day AI-powered competitive intelligence study using Mentionlytics — analyzing brand sentiment, mention volume, and share-of-voice for Komatsu and its industry rivals to produce data-driven positioning recommendations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #1c2330;
+      --border: #2d3748; --cyan: #22d3ee; --cyan-dim: #0891b2;
+      --cyan-glow: rgba(34,211,238,0.12); --green: #4ade80;
+      --text: #e2e8f0; --text-muted: #8892a4; --text-dim: #4a5568; --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px; opacity: 0.18; pointer-events: none; z-index: 0;
+    }
+    body > * { position: relative; z-index: 1; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 0; background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); }
+    .logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--cyan); }
+    .page { padding: 8rem 0 6rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--cyan); font-size: 0.85rem; font-weight: 500; margin-bottom: 2.5rem; transition: gap 0.2s; }
+    .back-link:hover { gap: 0.8rem; }
+    .proj-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.6rem; }
+    .proj-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+    .proj-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; line-height: 1.8; max-width: 680px; }
+    .tech-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .tech-chip { font-size: 0.72rem; padding: 0.25rem 0.7rem; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--cyan); font-weight: 600; letter-spacing: 0.06em; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--cyan), var(--green)); }
+    .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--cyan); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .proj-section { margin-bottom: 2.5rem; }
+    .proj-section-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+    .proj-section-title::before { content: ''; display: inline-block; width: 3px; height: 1.1em; background: var(--cyan); border-radius: 2px; }
+    .proj-section p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.85; margin-bottom: 0.9rem; }
+    .proj-section p strong { color: var(--text); }
+    .proj-section p em { color: var(--cyan); font-style: normal; }
+    .proj-list { padding-left: 0; margin-top: 0.6rem; }
+    .proj-list li { color: var(--text-muted); font-size: 0.95rem; padding: 0.5rem 0 0.5rem 1.4rem; position: relative; line-height: 1.75; border-bottom: 1px solid var(--surface2); }
+    .proj-list li:last-child { border-bottom: none; }
+    .proj-list li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); font-size: 0.7rem; top: 0.62rem; }
+    .proj-list li strong { color: var(--text); }
+    .data-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .data-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+    .data-card-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .data-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    .tech-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .tech-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.4rem; }
+    .tech-card-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .tech-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    .flow-steps { margin-top: 1rem; }
+    .flow-step { display: grid; grid-template-columns: 2.2rem 1fr; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--surface2); }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--cyan); }
+    .flow-body h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .flow-body p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+    .callout { border-left: 3px solid var(--cyan); background: var(--surface); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1.2rem 0; }
+    .callout p { font-size: 0.92rem; color: var(--text); margin: 0; line-height: 1.75; }
+    .callout p em { color: var(--cyan); font-style: italic; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; position: relative; overflow: hidden; }
+    .metric-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px; background: var(--cyan); }
+    .metric-name { font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .metric-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-credit { font-size: 0.8rem; color: var(--text-dim); }
+    .footer-credit span { color: var(--cyan); }
+    @media (max-width: 640px) { .tech-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">MX<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+
+      <a href="index.html#projects" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Projects
+      </a>
+
+      <p class="proj-eyebrow">Competitive Intelligence · AI-Powered Social Listening</p>
+      <h1 class="proj-title">Competitive Brand &amp; Social Listening Analysis</h1>
+      <p class="proj-subtitle">A 7-day AI-powered competitive intelligence study analyzing Komatsu and its industry rivals across mention volume, sentiment, and share-of-voice — turning a week of social-media chatter into evidence-backed positioning recommendations.</p>
+
+      <div class="tech-row">
+        <span class="tech-chip">Mentionlytics</span>
+        <span class="tech-chip">Sentiment Analysis</span>
+        <span class="tech-chip">Competitive Intel</span>
+        <span class="tech-chip">Share of Voice</span>
+        <span class="tech-chip">Data Visualization</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">7 Days</div>
+          <div class="stat-label">Study Window</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Multi-Brand</div>
+          <div class="stat-label">Competitive Set</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">3 Lenses</div>
+          <div class="stat-label">Volume · Sentiment · SOV</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Strategic</div>
+          <div class="stat-label">Positioning Recs</div>
+        </div>
+      </div>
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Business Problem</h2>
+        <p>Brand teams in heavy-industry categories often run on long-cycle research — annual brand-tracker studies, occasional pulse surveys. By the time a finding lands, the conversation has moved on. <strong>Social listening flips that</strong>: real-time customer voice, every day, scraped straight from open digital conversation.</p>
+        <p>The question was simple: <em>in a single week of digital chatter, what can we learn about how Komatsu is positioned against its competitors — and where should the brand push next?</em></p>
+        <div class="callout">
+          <p>The core question: <em>What does the market actually say about Komatsu — not what we hope it says?</em></p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Three Lenses</h2>
+        <p>The analysis tracked three complementary brand-health signals — each answers a different strategic question:</p>
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-name">📣 Mention Volume</div>
+            <div class="metric-desc">How loud is each brand in the conversation? Volume = attention. Sudden spikes signal a launch, a crisis, or a competitor moment to watch.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">💚 Sentiment</div>
+            <div class="metric-desc">Are mentions positive, neutral, or negative? Tracks the <em>quality</em> of attention — whether a brand is being celebrated or criticized.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">🎯 Share of Voice</div>
+            <div class="metric-desc">What slice of the category conversation does Komatsu own vs. each rival? The relative-position metric that turns raw volume into competitive insight.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">How the Study Worked</h2>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-num">01</div>
+            <div class="flow-body">
+              <h4>Scope &amp; Keyword Setup</h4>
+              <p>Defined the competitive set, the tracking keywords, and the language/region filters — making sure the study captured the right conversations and filtered out unrelated noise (e.g. unrelated uses of brand names).</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">02</div>
+            <div class="flow-body">
+              <h4>Mentionlytics Listening Run</h4>
+              <p>Configured <strong>Mentionlytics</strong> to collect mentions across social media, news, blogs, and forums over the 7-day window — capturing every reference to Komatsu and each competitor.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">03</div>
+            <div class="flow-body">
+              <h4>Volume &amp; Sentiment Tagging</h4>
+              <p>Pulled the raw mentions and the AI-classified <strong>sentiment scores</strong> (positive / neutral / negative) for each brand, day-over-day across the study window.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">04</div>
+            <div class="flow-body">
+              <h4>Share-of-Voice Modeling</h4>
+              <p>Aggregated mentions into <strong>share-of-voice</strong> percentages — what portion of the category conversation each brand owned — and benchmarked Komatsu's slice against the leader and the runner-ups.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">05</div>
+            <div class="flow-body">
+              <h4>Strategic Recommendations</h4>
+              <p>Synthesized the three lenses into a one-page strategic brief: where Komatsu is winning, where it's losing ground, and which positioning moves the data supports.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">What Made It Different</h2>
+        <ul class="proj-list">
+          <li><strong>Three lenses, not one.</strong> Mention volume alone tells you who's being talked about; sentiment alone tells you how they're being talked about; share-of-voice alone tells you the relative split. The three together tell you <em>which competitor is gaining the right kind of attention</em> — the only insight that actually drives positioning decisions.</li>
+          <li><strong>Days, not quarters.</strong> Traditional brand-tracker studies update on annual or quarterly cycles. A 7-day social listening study is fast, cheap, and repeatable — a different unit of analysis that complements (rather than replaces) the long-cycle work.</li>
+          <li><strong>AI tagging, human framing.</strong> Mentionlytics handles classification at scale; the value-add is the strategic frame put around the numbers. A spike in negative mentions only matters if you can say <em>why</em>, and <em>what to do about it</em>.</li>
+          <li><strong>One-page brief discipline.</strong> A week of data could become a hundred-slide deck. Forcing the synthesis to fit a one-page strategic brief made the recommendations <em>decision-ready</em>, not just thorough.</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Impact</h2>
+        <ul class="proj-list">
+          <li>Delivered <strong>data-backed positioning recommendations</strong> identifying where Komatsu was winning, where it was losing ground, and where to push the brand narrative next</li>
+          <li>Established a <strong>repeatable social-listening workflow</strong> — same keyword set, same three lenses, runnable monthly — to turn ad-hoc competitive scans into an ongoing brand-health signal</li>
+          <li>Showed how <strong>AI-powered listening can complement traditional brand tracking</strong> — operating on a weekly cadence instead of a quarterly one, and at a fraction of the cost</li>
+          <li>Produced an <strong>executive-grade one-page brief</strong> that translated a week of raw mentions into a focused set of positioning moves</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">What I Learned</h2>
+        <ul class="proj-list">
+          <li><strong>Volume is loud; sentiment is signal.</strong> The brands talked about most weren't always the brands talked about <em>best</em>. Pairing the two metrics caught nuances either one would have missed alone.</li>
+          <li><strong>Competitive context changes the story.</strong> Komatsu's absolute volume looked different once it was reframed as share-of-voice — what looked like growth was actually losing ground to a competitor growing faster. Relative metrics often beat absolute ones.</li>
+          <li><strong>Synthesis is the deliverable.</strong> Mentionlytics gives you charts. A useful study gives you a decision. The hardest, highest-value step was turning a week of dashboards into <em>three things the brand should actually do</em>.</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Technologies Used</h2>
+        <div class="tech-cards">
+          <div class="tech-card">
+            <div class="tech-card-name">Mentionlytics</div>
+            <div class="tech-card-desc">AI-powered social listening platform — collected mentions across social, news, blogs, and forums, and tagged them with sentiment scores for downstream analysis.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Sentiment Analysis</div>
+            <div class="tech-card-desc">AI classification of every captured mention into positive / neutral / negative — the qualitative layer on top of raw volume metrics.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Share-of-Voice Modeling</div>
+            <div class="tech-card-desc">Aggregated brand-level mention counts into category share percentages, benchmarking Komatsu against each competitor in the set.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Data Visualization</div>
+            <div class="tech-card-desc">Translated the three-lens analysis into clean charts and tables for the executive-grade one-page strategic brief.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-credit">Designed &amp; Built by <span>Mickey (Shoujun) Xu</span></div>
+  </footer>
+
+</body>
+</html>

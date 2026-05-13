@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud Data Pipeline &amp; Bankruptcy Prediction | Mickey Xu</title>
+  <meta name="description" content="End-to-end AWS ELT pipeline (S3 → Glue → Redshift → SageMaker) feeding a corporate bankruptcy prediction model with 92.52% accuracy — built to consolidate messy multi-source financial data into a single decision-ready risk score." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #1c2330;
+      --border: #2d3748; --cyan: #22d3ee; --cyan-dim: #0891b2;
+      --cyan-glow: rgba(34,211,238,0.12); --green: #4ade80;
+      --text: #e2e8f0; --text-muted: #8892a4; --text-dim: #4a5568; --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px; opacity: 0.18; pointer-events: none; z-index: 0;
+    }
+    body > * { position: relative; z-index: 1; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 0; background: rgba(13,17,23,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); }
+    .logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--cyan); }
+    .page { padding: 8rem 0 6rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--cyan); font-size: 0.85rem; font-weight: 500; margin-bottom: 2.5rem; transition: gap 0.2s; }
+    .back-link:hover { gap: 0.8rem; }
+    .proj-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.6rem; }
+    .proj-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+    .proj-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; line-height: 1.8; max-width: 680px; }
+    .tech-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .tech-chip { font-size: 0.72rem; padding: 0.25rem 0.7rem; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--cyan); font-weight: 600; letter-spacing: 0.06em; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--cyan), var(--green)); }
+    .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--cyan); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .proj-section { margin-bottom: 2.5rem; }
+    .proj-section-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+    .proj-section-title::before { content: ''; display: inline-block; width: 3px; height: 1.1em; background: var(--cyan); border-radius: 2px; }
+    .proj-section p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.85; margin-bottom: 0.9rem; }
+    .proj-section p strong { color: var(--text); }
+    .proj-section p em { color: var(--cyan); font-style: normal; }
+    .proj-list { padding-left: 0; margin-top: 0.6rem; }
+    .proj-list li { color: var(--text-muted); font-size: 0.95rem; padding: 0.5rem 0 0.5rem 1.4rem; position: relative; line-height: 1.75; border-bottom: 1px solid var(--surface2); }
+    .proj-list li:last-child { border-bottom: none; }
+    .proj-list li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); font-size: 0.7rem; top: 0.62rem; }
+    .proj-list li strong { color: var(--text); }
+    .data-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .data-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+    .data-card-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .data-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    .tech-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .tech-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.4rem; }
+    .tech-card-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .tech-card-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+    .flow-steps { margin-top: 1rem; }
+    .flow-step { display: grid; grid-template-columns: 2.2rem 1fr; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--surface2); }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--cyan); }
+    .flow-body h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .flow-body p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+    .callout { border-left: 3px solid var(--cyan); background: var(--surface); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1.2rem 0; }
+    .callout p { font-size: 0.92rem; color: var(--text); margin: 0; line-height: 1.75; }
+    .callout p em { color: var(--cyan); font-style: italic; }
+    /* Pipeline diagram */
+    .pipeline { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; padding: 1.2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+    .pipeline-stage { flex: 1; min-width: 110px; text-align: center; padding: 0.6rem 0.4rem; }
+    .pipeline-icon { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .pipeline-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--white); font-size: 0.92rem; }
+    .pipeline-arrow { color: var(--cyan); font-size: 1.3rem; flex: 0 0 auto; }
+    @media (max-width: 640px) {
+      .pipeline { flex-direction: column; }
+      .pipeline-arrow { transform: rotate(90deg); }
+    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-credit { font-size: 0.8rem; color: var(--text-dim); }
+    .footer-credit span { color: var(--cyan); }
+    @media (max-width: 640px) { .tech-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">MX<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+
+      <a href="index.html#projects" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Projects
+      </a>
+
+      <p class="proj-eyebrow">UW–Madison · Cloud Data Engineering Project</p>
+      <h1 class="proj-title">Cloud Data Pipeline &amp; Bankruptcy Risk Prediction</h1>
+      <p class="proj-subtitle">An end-to-end AWS pipeline that consolidates messy multi-source financial data into a single decision-ready risk score — built to give credit and investment teams a faster, more reliable signal on corporate bankruptcy risk.</p>
+
+      <div class="tech-row">
+        <span class="tech-chip">AWS S3</span>
+        <span class="tech-chip">AWS Glue</span>
+        <span class="tech-chip">Redshift</span>
+        <span class="tech-chip">SageMaker</span>
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">SQL</span>
+        <span class="tech-chip">ELT</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">92.52%</div>
+          <div class="stat-label">Model Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">End-to-End</div>
+          <div class="stat-label">AWS Pipeline</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Multi-Source</div>
+          <div class="stat-label">Financial Data</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Executive</div>
+          <div class="stat-label">Recommendations</div>
+        </div>
+      </div>
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Business Problem</h2>
+        <p>Credit, investment, and lending teams need to know one thing about a counterparty quickly: <strong>how likely are they to go bankrupt?</strong> The answer is usually buried in <em>financial statements, ratio data, and market signals</em> that arrive in different formats, on different schedules, from different sources.</p>
+        <p>Most of the time, the data engineering takes longer than the analysis. Analysts spend their week cleaning and joining files instead of generating insight — and the risk score that finally makes it to decision-makers is days old by the time it's ready.</p>
+        <div class="callout">
+          <p>The core question: <em>Can we turn messy multi-source financial data into a single, fresh, decision-ready risk score?</em></p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">The Pipeline</h2>
+        <p>An end-to-end ELT architecture on AWS — every stage swappable, every step auditable:</p>
+        <div class="pipeline">
+          <div class="pipeline-stage">
+            <div class="pipeline-icon">Stage 1</div>
+            <div class="pipeline-name">S3</div>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-stage">
+            <div class="pipeline-icon">Stage 2</div>
+            <div class="pipeline-name">Glue</div>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-stage">
+            <div class="pipeline-icon">Stage 3</div>
+            <div class="pipeline-name">Redshift</div>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-stage">
+            <div class="pipeline-icon">Stage 4</div>
+            <div class="pipeline-name">SageMaker</div>
+          </div>
+        </div>
+        <p><strong>S3</strong> stores raw financial files from multiple sources. <strong>Glue</strong> handles schema inference, cleaning, and transformation. <strong>Redshift</strong> serves as the modeled, query-ready warehouse. <strong>SageMaker</strong> trains and serves the bankruptcy prediction model directly off Redshift features.</p>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">How I Built It</h2>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-num">01</div>
+            <div class="flow-body">
+              <h4>Data Ingestion (S3)</h4>
+              <p>Landed raw financial statement and ratio data into versioned S3 buckets — partitioned by source and date so re-runs and audit trails are trivial.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">02</div>
+            <div class="flow-body">
+              <h4>Cleaning &amp; Transformation (Glue)</h4>
+              <p>Built AWS Glue jobs to <strong>standardize schemas, handle missing values, and engineer financial ratios</strong> (liquidity, leverage, profitability, efficiency) from the raw statement data — turning inconsistent inputs into a single clean feature table.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">03</div>
+            <div class="flow-body">
+              <h4>Modeled Warehouse (Redshift)</h4>
+              <p>Loaded the clean features into Redshift, designed for <strong>analyst SQL access</strong> and <strong>model training</strong>. Built downstream views for ad-hoc risk analysis and dashboarding.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">04</div>
+            <div class="flow-body">
+              <h4>Model Training (SageMaker)</h4>
+              <p>Trained a supervised classification model on labeled bankruptcy outcomes, pulling features directly from Redshift. Iterated on feature selection, class imbalance handling, and hyperparameter tuning to push validation accuracy to <strong>92.52%</strong>.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">05</div>
+            <div class="flow-body">
+              <h4>Executive Recommendations</h4>
+              <p>Translated model output into a one-page risk summary — flagging top-risk firms, the financial ratios driving the score, and recommended monitoring thresholds for credit / investment decisions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">What Made It Different</h2>
+        <ul class="proj-list">
+          <li><strong>Pipeline-first, model-second.</strong> Most bankruptcy-prediction projects skip straight to the model on a clean Kaggle CSV. The harder, more realistic version is building the pipeline that <em>produces</em> the clean data — that's where most of the engineering value sits in production.</li>
+          <li><strong>Auditable feature engineering.</strong> Every financial ratio was computed in Glue (not inside the notebook), so the inputs to the model could be traced back to the source rows and re-validated independently. No black-box features.</li>
+          <li><strong>Analyst-friendly outputs.</strong> Risk scores landed back in Redshift alongside the source features so business users could query <em>both</em> the prediction and the reasoning in the same SQL call — no need to swap between systems.</li>
+          <li><strong>Built to scale.</strong> Every stage in the pipeline is independently swappable. Add a new data source by adding a Glue job; swap the model by retraining inside SageMaker — the rest of the architecture doesn't move.</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Impact</h2>
+        <ul class="proj-list">
+          <li>Delivered a <strong>92.52% accuracy</strong> bankruptcy prediction model backed by a fully reproducible AWS data pipeline</li>
+          <li>Compressed multi-day, multi-file data prep into a <strong>repeatable pipeline run</strong> ready for analyst SQL access</li>
+          <li>Surfaced <strong>executive-level recommendations</strong> identifying the top financial-health red flags driving the model's predictions</li>
+          <li>Built a <strong>cloud-native architecture template</strong> that generalizes to any tabular risk-prediction use case — credit default, churn, fraud — by swapping the data source and label</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">What I Learned</h2>
+        <ul class="proj-list">
+          <li><strong>Data engineering decides the model ceiling.</strong> The accuracy gains in the last few iterations didn't come from a better algorithm — they came from cleaner features and better imputation upstream in Glue. The pipeline <em>is</em> the model.</li>
+          <li><strong>Reproducibility is a feature, not a checkbox.</strong> Versioned S3 buckets and idempotent Glue jobs sound boring until you have to re-run the whole pipeline to chase down a single anomaly — at which point they save the project.</li>
+          <li><strong>Cloud is just plumbing — until it isn't.</strong> Decoupling storage (S3), compute (Glue), warehouse (Redshift), and ML (SageMaker) felt overkill for a class project, but it's exactly the pattern production teams use. Every architectural choice paid off the moment something needed to change.</li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="proj-section">
+        <h2 class="proj-section-title">Technologies Used</h2>
+        <div class="tech-cards">
+          <div class="tech-card">
+            <div class="tech-card-name">AWS S3</div>
+            <div class="tech-card-desc">Raw and intermediate data storage, partitioned for incremental loads and full reproducibility of every pipeline run.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">AWS Glue</div>
+            <div class="tech-card-desc">Serverless ETL service for schema standardization, missing-value handling, and financial-ratio feature engineering at scale.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Amazon Redshift</div>
+            <div class="tech-card-desc">Cloud data warehouse hosting the modeled feature tables, plus risk scores written back from SageMaker for analyst-friendly SQL access.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Amazon SageMaker</div>
+            <div class="tech-card-desc">Managed ML platform for model training and evaluation — including hyperparameter tuning and class-imbalance handling for the bankruptcy classifier.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Python &amp; SQL</div>
+            <div class="tech-card-desc">Glue job logic, model training scripts, exploratory analysis, and the SQL views feeding the executive risk summary.</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-card-name">Pandas &amp; scikit-learn</div>
+            <div class="tech-card-desc">Local exploratory analysis and baseline model comparisons used to validate SageMaker results before promoting the final model.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-credit">Designed &amp; Built by <span>Mickey (Shoujun) Xu</span></div>
+  </footer>
+
+</body>
+</html>
